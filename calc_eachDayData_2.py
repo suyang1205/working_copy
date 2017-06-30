@@ -87,7 +87,7 @@ def judge_label(calltime, sendtime, start_day):
     for calltime, sendtime in records:
         jinjiandate = str(sendtime)[0:10]
         nowdate = str(calltime)[0:10]
-        if nowdate <= start_day:
+        if nowdate < start_day:
             nowdate = start_day
         internal_days = datediff(nowdate, jinjiandate)
         flag = -1
@@ -164,7 +164,7 @@ def rand_follow_day(now_day_data, callhisid_dict, internal_num):
             output_line = line_data[clomun_name_list]  ###去掉多余列
             final_data.append(output_line.values)
             line_data['flag'] = flag_false  ###不是n+1天拨打的电话
-            callhisid_dict[line_data['phone']] = line_data
+            callhisid_dict[phone] = line_data
         elif line_data['flag'] == 0:
             count += 1
             if count % internal_num == 0:
@@ -179,6 +179,7 @@ def sub_eachday(date_list, month, internal_num):
 
     ######## read data ######
     print 'reading...'
+    # data = pd.read_csv("../C++_feature/trial", sep='\t', quoting=csv.QUOTE_NONE, low_memory=False)
     data = pd.read_csv("../C++_feature/jieqing_%s_id" % month, sep='\t', quoting=csv.QUOTE_NONE, low_memory=False)
     print 'done'
     ######## end ###########

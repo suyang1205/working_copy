@@ -127,6 +127,7 @@ def judge_fk(label, fktime):
 def rand_start_day(start_day_data, start_day, callhisid_dict, internal_num):
     today_boda = start_day_data[start_day_data['calldate'] == start_day]
     follow_day_boda = start_day_data[start_day_data['calldate'] < start_day]
+    follow_day_boda.is_copy = False
     follow_day_boda.sort_values(by=['calldate'], ascending=[False], inplace=True)
     final_data = []
     for i in range(len(today_boda)):
@@ -179,8 +180,8 @@ def sub_eachday(date_list, month, internal_num):
 
     ######## read data ######
     print 'reading...'
-    # data = pd.read_csv("../C++_feature/trial", sep='\t', quoting=csv.QUOTE_NONE, low_memory=False)
-    data = pd.read_csv("../C++_feature/jieqing_%s_id" % month, sep='\t', quoting=csv.QUOTE_NONE, low_memory=False)
+    data = pd.read_csv("../C++_feature/trial", sep='\t', quoting=csv.QUOTE_NONE, low_memory=False)
+    # data = pd.read_csv("../C++_feature/jieqing_%s_id" % month, sep='\t', quoting=csv.QUOTE_NONE, low_memory=False)
     print 'done'
     ######## end ###########
 

@@ -6,26 +6,18 @@ import datetime
 
 clomun_name_list = ['jinjiandate', 'label', 'phone', 'call_times', 'connect_times', 'has_callin', 'has_staff_hangup',
                     'avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime', 'min_onlinetime',
-                    'max_onlinetime', 'province',
-                    'callresult', 'str_zhengxin', 'str_jujie', 'str_zhuce', 'str_mingtian', 'str_mendian', 'str_kaolv',
-                    'str_feilv',
-                    'str_daka', 'str_guanji', 'emotion', 'weekday', 'avg_comments_cnt', 'onlinetime_gap',
-                    'online_ascending_num',
-                    'online_decsending_num', 'waittime_ascending_num', 'waittime_decsending_num', 'month_nums_in',
-                    'beta_online',
+                    'max_onlinetime', 'province','callresult', 'str_zhengxin', 'str_jujie', 'str_zhuce', 'str_mingtian',
+                    'str_mendian', 'str_kaolv','str_feilv','str_daka', 'str_guanji', 'emotion', 'weekday',
+                    'avg_comments_cnt', 'onlinetime_gap','online_ascending_num','online_decsending_num',
+                    'waittime_ascending_num', 'waittime_decsending_num', 'month_nums_in','beta_online',
                     'beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
-output_clomun_name_list = ['label', 'phone','jinjiandate']
-
-                           #                  'call_times', 'connect_times', 'has_callin', 'has_staff_hangup',
-                           # 'avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime', 'min_onlinetime',
-                           # 'max_onlinetime', 'province',
-                           # 'callresult', 'str_zhengxin', 'str_jujie', 'str_zhuce', 'str_mingtian', 'str_mendian',
-                           # 'str_kaolv', 'str_feilv',
-                           # 'str_daka', 'str_guanji', 'emotion', 'weekday', 'avg_comments_cnt', 'onlinetime_gap',
-                           # 'online_ascending_num',
-                           # 'online_decsending_num', 'waittime_ascending_num', 'waittime_decsending_num',
-                           # 'month_nums_in', 'beta_online',
-                           # 'beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
+output_clomun_name_list = ['label', 'phone','jinjiandate', 'call_times', 'connect_times', 'has_callin',
+                           'has_staff_hangup','avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime',
+                           'min_onlinetime','max_onlinetime', 'province','callresult', 'str_zhengxin', 'str_jujie',
+                           'str_zhuce', 'str_mingtian', 'str_mendian','str_kaolv', 'str_feilv','str_daka', 'str_guanji',
+                           'emotion', 'weekday', 'avg_comments_cnt', 'onlinetime_gap','online_ascending_num',
+                           'online_decsending_num', 'waittime_ascending_num', 'waittime_decsending_num','month_nums_in',
+                           'beta_online','beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
 boda_flag_false = 0
 boda_flag_true = 1
 

@@ -33,7 +33,7 @@ def data_file_name(month):
         date_list_10 = dateRange("2016-10-08", "2016-11-01")
         return date_list_10
     if month == 11:
-        date_list_11 = dateRange("2016-11-01", "2017-12-01")
+        date_list_11 = dateRange("2016-11-01", "2016-12-01")
         return date_list_11
     if month == 12:
         date_list_12 = dateRange("2016-12-01", "2017-01-03")
@@ -189,7 +189,7 @@ def sub_eachday(date_list, month):
     ##### 打标签 ########
     start_day = date_list[0]
     data['calldate'] = map(lambda x: x[0:10], data['calltime'])
-    print transdate(data['sendtime'])
+    # print transdate(data['sendtime'])
     data['jinjiandate'] = transdate(data['sendtime'])
     data['label'] = judge_label(data['calltime'], data['sendtime'], start_day)
 

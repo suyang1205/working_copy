@@ -4,14 +4,21 @@ import csv
 import pandas as pd
 import datetime
 
-clomun_name_list = ['label', 'weight', 'call_times', 'connect_times', 'has_callin', 'has_staff_hangup', 'avg_waittime',
-                    'min_waittime', 'max_waittime', 'avg_onlinetime', 'min_onlinetime', 'max_onlinetime', 'province',
-                    'callresult', 'str_zhengxin', 'str_jujie', 'str_zhuce', 'str_mingtian', 'str_mendian', 'str_kaolv',
-                    'str_feilv', 'str_daka', 'str_guanji', 'emotion', 'weekday', 'avg_comments_cnt', 'onlinetime_gap',
-                    'online_ascending_num', 'online_decsending_num', 'waittime_ascending_num',
-                    'waittime_decsending_num',
-                    'month_nums_in', 'beta_online', 'beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age',
-                    'jietonglv']  # 'phone','calltime','sendtime','back_time'
+
+clomun_name_list = ['jinjiandate', 'label', 'phone', 'call_times', 'connect_times', 'has_callin', 'has_staff_hangup',
+                    'avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime', 'min_onlinetime',
+                    'max_onlinetime', 'province','callresult', 'str_zhengxin', 'str_jujie', 'str_zhuce', 'str_mingtian',
+                    'str_mendian', 'str_kaolv','str_feilv','str_daka', 'str_guanji', 'emotion', 'weekday',
+                    'avg_comments_cnt', 'onlinetime_gap','online_ascending_num','online_decsending_num',
+                    'waittime_ascending_num', 'waittime_decsending_num', 'month_nums_in','beta_online',
+                    'beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
+output_clomun_name_list = ['label', 'phone','jinjiandate', 'call_times', 'connect_times', 'has_callin',
+                           'has_staff_hangup','avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime',
+                           'min_onlinetime','max_onlinetime', 'province','callresult', 'str_zhengxin', 'str_jujie',
+                           'str_zhuce', 'str_mingtian', 'str_mendian','str_kaolv', 'str_feilv','str_daka', 'str_guanji',
+                           'emotion', 'weekday', 'avg_comments_cnt', 'onlinetime_gap','online_ascending_num',
+                           'online_decsending_num', 'waittime_ascending_num', 'waittime_decsending_num','month_nums_in',
+                           'beta_online','beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
 flag_false = 0
 flag_true = 1
 
@@ -27,7 +34,7 @@ def data_file_name(month):
         date_list_10 = dateRange("2016-10-08", "2016-11-01")
         return date_list_10
     if month == 11:
-        date_list_11 = dateRange("2016-11-01", "2017-12-01")
+        date_list_11 = dateRange("2016-11-01", "2016-12-01")
         return date_list_11
     if month == 12:
         date_list_12 = dateRange("2016-12-01", "2017-01-03")
@@ -50,7 +57,7 @@ def output_final(data, Path):
 
 
 def output_result(data, Path):
-    title = clomun_name_list
+    title = output_clomun_name_list
     with open(Path, 'w') as output:
         output.write('%s\n' % '\t'.join(map(lambda x: str(x), title)))
         for item in data:
@@ -80,6 +87,16 @@ def datediff(beginDate, endDate):
     return count
 
 
+def transdate(sendtime):
+    senddate = []
+    for time in sendtime:
+        try:
+            time = time[0:10]
+            senddate.append(time)
+        except:
+            senddate.append(0)
+    return senddate
+
 ###### 打标签 #########
 def judge_label(calltime, sendtime, start_day):
     label = []
@@ -96,9 +113,17 @@ def judge_label(calltime, sendtime, start_day):
         elif internal_days > 30 or internal_days == -1:
             flag = 0
         label.append(flag)
-
     return label
 
+
+def judge_label_line(nowdate, jinjiandate):
+    internal_days = datediff(nowdate, jinjiandate)
+    label = -1
+    if (internal_days <= 30) and (internal_days >= 0):
+        label = 1
+    elif internal_days > 30 or internal_days == -1:
+        label = 0
+    return label
 
 ####### 标记放款 ######
 def istime(fktime):
@@ -132,7 +157,7 @@ def rand_start_day(start_day_data, start_day, callhisid_dict, internal_num):
     final_data = []
     for i in range(len(today_boda)):
         line = today_boda.iloc[i]
-        output_line = line[clomun_name_list]  ###去掉多余列
+        output_line = line[output_clomun_name_list]  ###去掉多余列
         final_data.append(output_line.values)
         temp_line = line[clomun_name_list]
         temp_line['flag'] = flag_false  ###不是n+1天拨打的电话
@@ -141,7 +166,7 @@ def rand_start_day(start_day_data, start_day, callhisid_dict, internal_num):
     for j in range(len(follow_day_boda)):
         line = follow_day_boda.iloc[j]
         if (j + 1) % internal_num == 0:
-            output_line = line[clomun_name_list]  ###去掉多余列
+            output_line = line[output_clomun_name_list]  ###去掉多余列
             final_data.append(output_line.values)
         temp_line = line[clomun_name_list]
         temp_line['flag'] = flag_false  ###不是n+1天拨打的电话
@@ -149,7 +174,7 @@ def rand_start_day(start_day_data, start_day, callhisid_dict, internal_num):
     return callhisid_dict, final_data
 
 
-def rand_follow_day(now_day_data, callhisid_dict, internal_num):
+def rand_follow_day(now_day, now_day_data, callhisid_dict, internal_num):
     count = 0
     final_data = []
     for i in range(len(now_day_data)):
@@ -162,14 +187,15 @@ def rand_follow_day(now_day_data, callhisid_dict, internal_num):
     for phone in callhisid_dict:
         line_data = callhisid_dict[phone]
         if line_data['flag'] == 1:
-            output_line = line_data[clomun_name_list]  ###去掉多余列
+            output_line = line_data[output_clomun_name_list]  ###去掉多余列
             final_data.append(output_line.values)
             line_data['flag'] = flag_false  ###不是n+1天拨打的电话
             callhisid_dict[phone] = line_data
         elif line_data['flag'] == 0:
             count += 1
             if count % internal_num == 0:
-                output_line = line_data[clomun_name_list]  ###去掉多余列
+                line_data['label'] = judge_label_line(now_day, line_data['jinjiandate'])
+                output_line = line_data[output_clomun_name_list]  ###去掉多余列
                 final_data.append(output_line.values)
     return callhisid_dict, final_data
 
@@ -188,8 +214,9 @@ def sub_eachday(date_list, month, internal_num):
     ##### 打标签 ########
     start_day = date_list[0]
     data['calldate'] = map(lambda x: x[0:10], data['calltime'])
+    data['jinjiandate'] = transdate(data['sendtime'])
     data['label'] = judge_label(data['calltime'], data['sendtime'], start_day)
-    data['fk_label'] = judge_fk(data['label'], data['back_time'])  ###放款
+    ### data['fk_label'] = judge_fk(data['label'], data['back_time'])  ###放款
 
     start_day_data = data[data['calldate'] <= start_day]
 
@@ -202,7 +229,7 @@ def sub_eachday(date_list, month, internal_num):
         print date_list[i]
         now_day = date_list[i]
         now_day_data = data[data['calldate'] == now_day]
-        callhisid_dict, follow_day_data = rand_follow_day(now_day_data, callhisid_dict, internal_num)
+        callhisid_dict, follow_day_data = rand_follow_day(now_day, now_day_data, callhisid_dict, internal_num)
         output_result(follow_day_data, './final_%s/%s' % (month, now_day))
 
 

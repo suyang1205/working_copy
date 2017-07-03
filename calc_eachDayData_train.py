@@ -5,7 +5,7 @@ import pandas as pd
 import datetime
 
 
-clomun_name_list = ['jinjiandate', 'label', 'phone', 'call_times', 'connect_times', 'has_callin', 'has_staff_hangup',
+clomun_name_list = ['jinjiandate','label','phone','call_times','connect_times','has_callin','has_staff_hangup',
                     'avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime', 'min_onlinetime',
                     'max_onlinetime', 'province','callresult', 'str_zhengxin', 'str_jujie', 'str_zhuce', 'str_mingtian',
                     'str_mendian', 'str_kaolv','str_feilv','str_daka', 'str_guanji', 'emotion', 'weekday',
@@ -18,7 +18,7 @@ output_clomun_name_list = ['label', 'phone','jinjiandate', 'call_times', 'connec
                            'str_zhuce', 'str_mingtian', 'str_mendian','str_kaolv', 'str_feilv','str_daka', 'str_guanji',
                            'emotion', 'weekday', 'avg_comments_cnt', 'onlinetime_gap','online_ascending_num',
                            'online_decsending_num', 'waittime_ascending_num', 'waittime_decsending_num','month_nums_in',
-                           'beta_online','beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
+                           'beta_online','beta_wait','loanamount','sex','has_car','house','age','level']
 flag_false = 0
 flag_true = 1
 
@@ -125,29 +125,6 @@ def judge_label_line(nowdate, jinjiandate):
         label = 0
     return label
 
-####### 标记放款 ######
-def istime(fktime):
-    date = str(fktime)[0:10]
-    format = "%Y-%m-%d"
-    try:
-        strtodatetime(date, format)
-        return True
-    except:
-        return False
-
-
-def judge_fk(label, fktime):
-    fk = []
-    records = zip(label, fktime)
-    for label, fktime in records:
-        if (label == 1) and (istime(fktime) is True):
-            fk_label = 1
-        else:
-            fk_label = 0
-        fk.append(fk_label)
-    return fk
-
-
 ####### 抽样函数 ##########
 def rand_start_day(start_day_data, start_day, callhisid_dict, internal_num):
     today_boda = start_day_data[start_day_data['calldate'] == start_day]
@@ -216,7 +193,6 @@ def sub_eachday(date_list, month, internal_num):
     data['calldate'] = map(lambda x: x[0:10], data['calltime'])
     data['jinjiandate'] = transdate(data['sendtime'])
     data['label'] = judge_label(data['calltime'], data['sendtime'], start_day)
-    ### data['fk_label'] = judge_fk(data['label'], data['back_time'])  ###放款
 
     start_day_data = data[data['calldate'] <= start_day]
 

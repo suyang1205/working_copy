@@ -4,20 +4,20 @@ import csv
 import pandas as pd
 import datetime
 
-clomun_name_list = ['jinjiandate', 'label', 'phone', 'call_times', 'connect_times', 'has_callin', 'has_staff_hangup',
+clomun_name_list = ['jinjiandate','fkdate','label','phone','call_times','connect_times','has_callin','has_staff_hangup',
                     'avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime', 'min_onlinetime',
                     'max_onlinetime', 'province','callresult', 'str_zhengxin', 'str_jujie', 'str_zhuce', 'str_mingtian',
                     'str_mendian', 'str_kaolv','str_feilv','str_daka', 'str_guanji', 'emotion', 'weekday',
                     'avg_comments_cnt', 'onlinetime_gap','online_ascending_num','online_decsending_num',
                     'waittime_ascending_num', 'waittime_decsending_num', 'month_nums_in','beta_online',
-                    'beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
+                    'beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level','fk_label']
 output_clomun_name_list = ['label', 'phone','jinjiandate', 'call_times', 'connect_times', 'has_callin',
                            'has_staff_hangup','avg_waittime', 'min_waittime', 'max_waittime', 'avg_onlinetime',
                            'min_onlinetime','max_onlinetime', 'province','callresult', 'str_zhengxin', 'str_jujie',
                            'str_zhuce', 'str_mingtian', 'str_mendian','str_kaolv', 'str_feilv','str_daka', 'str_guanji',
                            'emotion', 'weekday', 'avg_comments_cnt', 'onlinetime_gap','online_ascending_num',
                            'online_decsending_num', 'waittime_ascending_num', 'waittime_decsending_num','month_nums_in',
-                           'beta_online','beta_wait', 'loanamount', 'sex', 'has_car', 'house', 'age', 'level']
+                           'beta_online','beta_wait','loanamount','sex','has_car','house','age','level','fk_label']
 boda_flag_false = 0
 boda_flag_true = 1
 
@@ -128,11 +128,9 @@ def judge_label_line(nowdate, jinjiandate):
 
 ####### 标记放款 ######
 def istime(fktime):
-    date = str(fktime)[0:10]
-    format = "%Y-%m-%d"
     try:
-        strtodatetime(date, format)
-        return True
+        fktime = fktime[0:10]
+        return fktime
     except:
         return False
 
@@ -141,13 +139,20 @@ def judge_fk(label, fktime):
     fk = []
     records = zip(label, fktime)
     for label, fktime in records:
-        if (label == 1) and (istime(fktime) is True):
+        if (label == 1) and istime(fktime):
             fk_label = 1
         else:
             fk_label = 0
         fk.append(fk_label)
     return fk
 
+
+def judge_fk_line(label, fktime):
+    if (label == 1) and istime(fktime):
+        fk_label = 1
+    else:
+        fk_label = 0
+    return fk_label
 
 ####### 数据处理函数 ##########
 def proc_follow_day(now_day, now_day_data, callhisid_dict):
@@ -170,6 +175,7 @@ def proc_follow_day(now_day, now_day_data, callhisid_dict):
         elif line_data['flag'] == 0:
             line_data.is_copy = False
             line_data['label'] = judge_label_line(now_day, line_data['jinjiandate'])
+            line_data['fk_label'] = judge_fk_line(line_data['label'],line_data['fkdate'])
             output_line = line_data[output_clomun_name_list]  ###去掉shuchu多余列
             final_data.append(output_line.values.tolist())
     return callhisid_dict, final_data
@@ -189,9 +195,10 @@ def sub_eachday(date_list, month):
     ##### 打标签 ########
     start_day = date_list[0]
     data['calldate'] = map(lambda x: x[0:10], data['calltime'])
-    # print transdate(data['sendtime'])
     data['jinjiandate'] = transdate(data['sendtime'])
-    data['label'] = judge_label(data['calltime'], data['sendtime'], start_day)
+    data['fkdate'] = transdate(data['back_time'])
+    data['label'] = judge_label(data['calltime'], data['sendtime'], start_day)   ##初始进件标记
+    data['fk_label'] = judge_fk(data['label'],data['back_time'])   ##初始放款标记
 
     start_day_data = data[data['calldate'] <= start_day]
     start_day_data = start_day_data[clomun_name_list]  ###去掉多余列
